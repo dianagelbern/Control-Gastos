@@ -1,13 +1,18 @@
 import { useState } from "react";
 import cerrarBtn from "../img/cerrar.svg";
+import Mensaje from "./Mensaje";
+
 export const Modal: React.FC<{
   setModal: Function;
   animarModal: boolean;
   setAnimarModal: Function;
+  guardarGasto: Function;
 }> = (props) => {
-    const [nombre, setNombre] = useState('');
-    const [cantidad, setCantidad] = useState(0);
-    const [categoria, setCategoria] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [cantidad, setCantidad] = useState(0);
+  const [categoria, setCategoria] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  
 
   const ocultarModal = () => {
     props.setModal(false);
@@ -18,13 +23,29 @@ export const Modal: React.FC<{
     }, 500);
   };
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    if ([nombre, cantidad, categoria].includes("")) {
+      setMensaje("Todos los campos son obligatorios");
+      setTimeout(() => {
+        setMensaje("");
+      }, 2500);
+      return;
+    }
+    props.guardarGasto({ nombre, cantidad, categoria });
+  };
+
   return (
     <div className="modal">
       <div className="cerrar-modal">
         <img src={cerrarBtn} alt="Cerrar modal" onClick={ocultarModal} />
       </div>
-      <form className={`formulario ${props.animarModal ? "animar" : "cerrar"}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`formulario ${props.animarModal ? "animar" : "cerrar"}`}
+      >
         <legend>Nuevo Gasto</legend>
+        {mensaje && <Mensaje tipo={"error"} mensaje={mensaje} />}
         <div className="campo">
           <label htmlFor="nombre">Nombre Gasto</label>
           <input
@@ -47,10 +68,11 @@ export const Modal: React.FC<{
         </div>
         <div className="campo">
           <label htmlFor="categoria">Categoría</label>
-          <select 
-          id="categoria"
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}>
+          <select
+            id="categoria"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          >
             <option value="">-- Seleccione --</option>
             <option value="ahorro">Ahorro</option>
             <option value="comida">Comida</option>
