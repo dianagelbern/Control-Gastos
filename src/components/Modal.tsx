@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cerrarBtn from "../img/cerrar.svg";
 import Mensaje from "./Mensaje";
 
@@ -7,17 +7,28 @@ export const Modal: React.FC<{
   animarModal: boolean;
   setAnimarModal: Function;
   guardarGasto: Function;
+  gastoEditar: any;
+  setGastoEditar: Function;
 }> = (props) => {
   const [nombre, setNombre] = useState("");
   const [cantidad, setCantidad] = useState(0);
   const [categoria, setCategoria] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [id, setId] = useState("")
   
+  useEffect(() => {
+    if(Object.keys(props.gastoEditar).length > 0){
+      setNombre(props.gastoEditar.nombre);
+      setCantidad(props.gastoEditar.cantidad);
+      setCategoria(props.gastoEditar.categoria);
+      setId(props.gastoEditar.id)
+    }
+  }, []);
 
   const ocultarModal = () => {
     props.setModal(false);
     props.setAnimarModal(false);
-
+    props.setGastoEditar({});
     setTimeout(() => {
       props.setModal(false);
     }, 500);
@@ -32,7 +43,7 @@ export const Modal: React.FC<{
       }, 2500);
       return;
     }
-    props.guardarGasto({ nombre, cantidad, categoria });
+    props.guardarGasto({ nombre, cantidad, categoria, id });
   };
 
   return (
@@ -44,7 +55,7 @@ export const Modal: React.FC<{
         onSubmit={handleSubmit}
         className={`formulario ${props.animarModal ? "animar" : "cerrar"}`}
       >
-        <legend>Nuevo Gasto</legend>
+        <legend>{props.gastoEditar.nombre ? "Editar Gasto" : "Nuevo Gasto"}</legend>
         {mensaje && <Mensaje tipo={"error"} mensaje={mensaje} />}
         <div className="campo">
           <label htmlFor="nombre">Nombre Gasto</label>
@@ -83,7 +94,7 @@ export const Modal: React.FC<{
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value="Añadir Gasto" />
+        <input type="submit" value={props.gastoEditar.nombre ? "Guardar Cambios" : "Añadir Gasto"} />
       </form>
     </div>
   );
