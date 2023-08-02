@@ -9,6 +9,7 @@ export const Header: React.FC<{
   setPresupuesto: Function;
   isValidPresupuesto: boolean;
   setValidPresupuesto: Function;
+  setGastos: Function;
 }> = (props) => {
   return (
     <header>
@@ -17,6 +18,9 @@ export const Header: React.FC<{
         <ControlPresupuesto
         gastos={props.gastos}
         presupuesto={props.presupuesto}
+        setGastos={props.setGastos}
+        setPresupuesto={props.setPresupuesto}
+        setValidPresupuesto={props.setValidPresupuesto}
         />
       ) : (
         <NuevoPresupuesto
