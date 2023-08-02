@@ -1,4 +1,4 @@
-# Control deGastos
+# Control de Gastos
 
 ## Ejemplo de las principales funciones de la aplicación
 
